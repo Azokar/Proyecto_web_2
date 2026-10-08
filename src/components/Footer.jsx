@@ -1,5 +1,4 @@
-git add src/components/Footer.jsx
-git commit -m "feat(componentes): agrega pie de página"
+
 export default function Footer() {
   const anio_actual = new Date().getFullYear();
 
