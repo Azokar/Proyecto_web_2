@@ -113,23 +113,16 @@ Cada artículo tiene esta forma:
 
 ## Estado del proyecto
 
-El proyecto está en desarrollo y se integra por etapas mediante pull requests.
+La aplicación completa está integrada en `main` y funciona de extremo a extremo.
 
-| Funcionalidad | Rama | Estado |
-| --- | --- | --- |
-| Configuración base (Vite, HTML, favicon) | `main` | ✅ Integrada |
-| Estado global, formulario y páginas de crear/editar | `main` | ✅ Integrada |
-| Catálogo con filtros y tarjetas de artículo | `develop` | 🔄 Pendiente de pasar a `main` |
-| Página de inicio con estadísticas | `develop` | 🔄 Pendiente de pasar a `main` |
-| Rutas, layouts, navbar, footer, estilos y página 404 | `feature/rutas-y-layouts` | 🚧 En desarrollo |
-
-> **Nota:** `main` todavía no incluye `src/routes/` ni `src/styles/`, por lo que la aplicación completa aún no arranca desde esa rama. Para probarla hoy, usa la rama `feature/rutas-y-layouts`:
->
-> ```bash
-> git checkout feature/rutas-y-layouts
-> npm install
-> npm run dev
-> ```
+| Funcionalidad | Estado |
+| --- | --- |
+| Configuración base (Vite, HTML, favicon) | ✅ Integrada |
+| Estado global, formulario y páginas de crear/editar | ✅ Integrada |
+| Catálogo con filtros y tarjetas de artículo | ✅ Integrada |
+| Página de inicio con estadísticas | ✅ Integrada |
+| Rutas, layouts, navbar, footer, estilos y página 404 | ✅ Integrada |
+| Persistencia de datos y conexión con un backend | ⏳ Pendiente |
 
 ## Flujo de trabajo con Git
 
