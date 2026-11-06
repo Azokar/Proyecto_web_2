@@ -2,7 +2,9 @@
 
 Plataforma sin ánimo de lucro para el préstamo de **libros** y **dispositivos**. Es una SPA hecha con React que permite consultar un catálogo de artículos, crearlos, editarlos y eliminarlos, y cambiar entre tema claro y oscuro.
 
-> Por ahora los datos viven en memoria (Context API). Al recargar la página se vuelve a los artículos de ejemplo; la conexión con un backend queda para una etapa posterior.
+> Conectada a la **API de Java** (`nexou-api`) y al **microservicio de gráficas** (Python). Hay dos tipos de usuario:
+> el **administrador** publica y gestiona artículos y ve las estadísticas; el **usuario normal** se registra solo con
+> usuario y contraseña, y reserva libros y dispositivos.
 
 ## Tabla de contenidos
 
@@ -19,8 +21,10 @@ Plataforma sin ánimo de lucro para el préstamo de **libros** y **dispositivos*
 
 ## Características
 
-- **CRUD de artículos**: crear, listar, editar y eliminar libros y dispositivos.
+- **CRUD de artículos**: crear, listar, editar y eliminar libros y dispositivos, con imagen (el admin la sube desde el formulario).
 - **Catálogo con filtros** por tipo de artículo (Libro / Dispositivo).
+- **Estadísticas dinámicas** (solo admin) con filtros por periodo, tipo, semestre, programa, categoría y estado.
+- **Perfil opcional** (semestre y programa) para mejorar las estadísticas sin complicar el registro.
 - **Página de inicio** con estadísticas del inventario.
 - **Formulario controlado** reutilizable para crear y editar, con validación de campos obligatorios.
 - **Tema claro y oscuro** mediante un atributo `data-tema` en el `<html>` y variables CSS.
@@ -57,14 +61,30 @@ Luego abre la URL que muestra Vite en la terminal (por defecto `http://localhost
 | `npm run build` | Genera la versión de producción en `dist/` |
 | `npm run preview` | Sirve localmente el contenido de `dist/` |
 
+## Variables de entorno
+
+Copia `.env.example` como `.env.local` (o defínelas en Vercel):
+
+| Variable | Descripción |
+| --- | --- |
+| `VITE_API_URL` | URL de la API de Java (por defecto `http://localhost:8080`) |
+| `VITE_GRAFICAS_URL` | URL del microservicio de gráficas (por defecto `http://localhost:8000`) |
+
+`vercel.json` redirige todas las rutas a `index.html` para que React Router funcione al recargar.
+
 ## Rutas
 
 | Ruta | Página | Layout |
 | --- | --- | --- |
-| `/` | Inicio con estadísticas | `MainLayout` |
-| `/catalogo` | Catálogo de artículos | `MainLayout` |
-| `/crear` | Crear artículo | `MainLayout` |
-| `/editar/:id_articulo` | Editar artículo | `MainLayout` |
+| `/` | Inicio | `MainLayout` |
+| `/catalogo` | Catálogo y reservar (con sesión) | `MainLayout` |
+| `/mis-reservas` | Mis reservas: devolver y renovar (con sesión) | `MainLayout` |
+| `/crear` | Publicar artículo (**admin**) | `MainLayout` |
+| `/editar/:tipo/:id_articulo` | Editar artículo (**admin**) | `MainLayout` |
+| `/admin/reservas` | Reservas de todos los usuarios (**admin**) | `MainLayout` |
+| `/admin/estadisticas` | Estadísticas con filtros (**admin**) | `MainLayout` |
+| `/perfil` | Mi perfil: semestre y programa (con sesión) | `MainLayout` |
+| `/entrar`, `/registro` | Login y registro | `AuthLayout` |
 | `*` | Página 404 | `AuthLayout` |
 
 `MainLayout` incluye la barra de navegación y el pie de página; `AuthLayout` muestra el contenido centrado en una tarjeta.
@@ -122,7 +142,8 @@ La aplicación completa está integrada en `main` y funciona de extremo a extrem
 | Catálogo con filtros y tarjetas de artículo | ✅ Integrada |
 | Página de inicio con estadísticas | ✅ Integrada |
 | Rutas, layouts, navbar, footer, estilos y página 404 | ✅ Integrada |
-| Persistencia de datos y conexión con un backend | ⏳ Pendiente |
+| Conexión con la API (catálogo, reservas), login y registro con roles | ✅ Integrada |
+| Estadísticas con gráficas del microservicio de Python (solo admin) | ✅ Integrada |
 
 ## Flujo de trabajo con Git
 
