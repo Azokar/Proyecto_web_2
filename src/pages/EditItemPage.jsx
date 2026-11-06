@@ -1,22 +1,27 @@
 // ============================================================
-// Página: Editar artículo
+// Página: Editar artículo (ADMIN)
 // ============================================================
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import useTituloPagina from '../hooks/useTituloPagina';
 import { useAlquiler } from '../context/RentalContext';
 import ItemForm from '../components/ItemForm';
+import { useAvisos } from '../context/AvisosContext';
 
 export default function EditItemPage() {
   useTituloPagina('Editar artículo');
 
-  // Lee el id de la URL (ruta: /editar/:id_articulo)
-  const { id_articulo } = useParams();
-  const { obtener_articulo_por_id, actualizar_articulo } = useAlquiler();
+  // Lee el tipo y el id de la URL (ruta: /editar/:tipo/:id_articulo). El tipo hace falta
+  // porque un libro y un equipo pueden tener el mismo id.
+  const { tipo, id_articulo } = useParams();
+  const { obtener_articulo, actualizar_articulo, cargando } = useAlquiler();
   const navegar_a_otra_pagina = useNavigate();
+  const { avisar } = useAvisos();
 
-  const articulo_a_editar = obtener_articulo_por_id(id_articulo);
+  const articulo_a_editar = obtener_articulo(tipo, id_articulo);
 
-  // Si el id no existe (por ejemplo, ya fue eliminado), avisamos al usuario
+  if (cargando) return <p className="texto_atenuado">Cargando…</p>;
+
+  // Si no existe (por ejemplo, ya fue eliminado), avisamos al usuario
   if (!articulo_a_editar) {
     return (
       <section>
@@ -26,16 +31,18 @@ export default function EditItemPage() {
     );
   }
 
-  const manejar_actualizacion_articulo = (datos_modificados) => {
-    actualizar_articulo(id_articulo, datos_modificados);
+  const manejar_actualizacion_articulo = async (tipo_articulo, datos_api, imagen) => {
+    await actualizar_articulo(tipo_articulo, id_articulo, datos_api, imagen);
+    avisar('Cambios guardados');
     navegar_a_otra_pagina('/catalogo');
   };
 
   return (
     <section className="contenedor_estrecho">
       <h1>Editar artículo</h1>
+      <p className="subtitulo_pagina">{articulo_a_editar.nombre}</p>
       <ItemForm
-        datos_iniciales={articulo_a_editar}
+        articulo_inicial={articulo_a_editar}
         al_enviar_formulario={manejar_actualizacion_articulo}
         texto_boton_enviar="Guardar cambios"
       />
