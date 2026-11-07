@@ -10,6 +10,7 @@ export default function CatalogPage() {
   return (
     <section>
       <h1>Catálogo</h1>
+      <p className="subtitulo_pagina">Libros y equipos disponibles para préstamo.</p>
       <ItemList />
     </section>
   );
