@@ -4,7 +4,8 @@
 // Libro        -> se elige por cuántos días se presta (máximo según el libro)
 // Dispositivo  -> se elige fecha/hora de inicio y por cuántas horas (máximo según el equipo)
 // Las reglas de fondo (stock, máximo de 3 reservas activas…) las valida la API.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAlquiler } from '../context/RentalContext';
 import { useAvisos } from '../context/AvisosContext';
@@ -37,6 +38,13 @@ export default function ReservaModal({ articulo, al_cerrar: cerrar_ahora }) {
   const [mensaje_error, establecer_mensaje_error] = useState('');
   const [enviando, establecer_enviando] = useState(false);
   const [cerrando, establecer_cerrando] = useState(false);
+
+  // Mientras la ventana está abierta, la página de atrás no se desplaza
+  useEffect(() => {
+    const anterior = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = anterior; };
+  }, []);
 
   // La salida dura 140 ms (más rápida que la entrada) y después se desmonta
   const al_cerrar = () => {
@@ -75,7 +83,9 @@ export default function ReservaModal({ articulo, al_cerrar: cerrar_ahora }) {
     }
   };
 
-  return (
+  // Se dibuja en <body> (portal): dentro de la tarjeta, su efecto al pasar el cursor (transform)
+  // cambiaba el bloque de referencia del modal (position: fixed) y la ventana parpadeaba al hacer scroll.
+  return createPortal(
     <div className={`fondo_modal ${cerrando ? 'cerrando' : ''}`} onClick={al_cerrar}>
       {/* stopPropagation evita que un clic dentro de la ventana la cierre */}
       <div className="ventana_modal" onClick={(evento) => evento.stopPropagation()}>
@@ -129,6 +139,7 @@ export default function ReservaModal({ articulo, al_cerrar: cerrar_ahora }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
